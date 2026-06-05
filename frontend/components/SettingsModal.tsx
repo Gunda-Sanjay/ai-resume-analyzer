@@ -3,6 +3,7 @@ import { Settings, X, Key, Info, HelpCircle } from "lucide-react";
 import { ApiConfig } from "../types";
 
 const recommendedModels: Record<ApiConfig["provider"], string[]> = {
+  gemini: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-1.5-flash", "gemini-1.5-pro"],
   openai: ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo", "o1-mini", "o3-mini"],
   anthropic: [
     "claude-3-5-haiku-20241022",
@@ -19,7 +20,7 @@ interface SettingsModalProps {
 }
 
 export default function SettingsModal({ isOpen, onClose, config, onSave }: SettingsModalProps) {
-  const [provider, setProvider] = useState<ApiConfig["provider"]>("openai");
+  const [provider, setProvider] = useState<ApiConfig["provider"]>("gemini");
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState("");
   const [showKey, setShowKey] = useState(false);
@@ -75,7 +76,7 @@ export default function SettingsModal({ isOpen, onClose, config, onSave }: Setti
             <Info className="w-4 h-4 mt-0.5 shrink-0 text-zinc-500" />
             <div className="space-y-1 font-mono text-[11px] leading-relaxed">
               <span className="font-bold uppercase tracking-wider block text-black dark:text-white">API Integration</span>
-              Matches use a secure server-side OpenAI key by default. Toggle below if you require custom provider or model settings.
+              Matches use a secure server-side Gemini key by default. Toggle below if you require custom provider or model settings.
             </div>
           </div>
 
@@ -86,6 +87,7 @@ export default function SettingsModal({ isOpen, onClose, config, onSave }: Setti
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
+                { id: "gemini", label: "Gemini", desc: "2.5 Flash" },
                 { id: "openai", label: "OpenAI", desc: "GPT-4o Mini" },
                 { id: "anthropic", label: "Anthropic", desc: "Haiku 3" },
               ].map((item) => {
@@ -170,12 +172,12 @@ export default function SettingsModal({ isOpen, onClose, config, onSave }: Setti
               <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 flex items-center space-x-1">
                 <Key className="w-3 h-3 mr-1" /> Bearer API Key
               </label>
-              {provider === "openai" ? (
-                <span className="text-[9px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 px-1.5 py-0.5 rounded uppercase">
+              {provider === "gemini" ? (
+                <span className="text-[9px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-650 dark:text-zinc-400 px-1.5 py-0.5 rounded uppercase">
                   Default Active
                 </span>
               ) : (
-                <span className="text-[9px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-black dark:text-white px-1.5 py-0.5 rounded uppercase">
+                <span className="text-[9px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 px-1.5 py-0.5 rounded uppercase">
                   Required
                 </span>
               )}
@@ -187,7 +189,7 @@ export default function SettingsModal({ isOpen, onClose, config, onSave }: Setti
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder={
-                  provider === "openai"
+                  provider === "gemini"
                     ? "Using default environment credentials"
                     : `Provide your custom ${provider} key`
                 }
