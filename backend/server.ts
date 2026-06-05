@@ -21,6 +21,16 @@ export async function createApp() {
     res.json({ status: "ok" });
   });
 
+  // Welcome route for /
+  app.get("/", (_req, res) => {
+    res.json({ status: "online", message: "AI Resume Analyzer Backend API is running successfully!" });
+  });
+
+  // Welcome route for /api
+  app.get("/api", (_req, res) => {
+    res.json({ status: "online", message: "AI Resume Analyzer Backend API is running successfully!" });
+  });
+
   // --- MONGODB AUTHENTICATION ENDPOINTS ---
 
   app.post("/api/auth/register", async (req, res): Promise<void> => {
