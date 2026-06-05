@@ -235,12 +235,12 @@ export async function createApp() {
         return;
       }
 
-      const resolvedProvider = provider || "openai";
+      const resolvedProvider = provider || "gemini";
       const resolvedApiKey = apiKey || process.env.GEMINI_API_KEY;
 
-      if (resolvedProvider === "openai" && !resolvedApiKey) {
+      if (resolvedProvider === "gemini" && !resolvedApiKey) {
         res.status(400).json({
-          error: "No default OpenAI API Key is configured on the server. Please provide a custom API Key in the settings overlay.",
+          error: "No default Gemini API Key is configured on the server. Please provide a custom API Key in the settings overlay.",
         });
         return;
       }
@@ -265,7 +265,29 @@ Perform a rigorous evaluation and return a perfectly formatted JSON object with 
 Return ONLY the JSON object. Do not wrap in markdown blocks, do not add introductory elements, and do not add trailing markdown content.
 `;
 
-      if (resolvedProvider === "openai") {
+      if (resolvedProvider === "gemini") {
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model || "gemini-2.5-flash"}:generateContent?key=${resolvedApiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptText }] }],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          }),
+        });
+
+        if (!geminiResponse.ok) {
+          const errData = await geminiResponse.json().catch(() => ({}));
+          res.status(geminiResponse.status).json({ error: `Gemini API Error: ${errData?.error?.message || geminiResponse.statusText}` });
+          return;
+        }
+
+        const data: any = await geminiResponse.json();
+        const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        res.json(JSON.parse(resultText));
+        return;
+      } else if (resolvedProvider === "openai") {
         if (!resolvedApiKey) {
           res.status(400).json({ error: "An OpenAI API Key must be provided to use the OpenAI provider." });
           return;
@@ -344,12 +366,12 @@ Return ONLY the JSON object. Do not wrap in markdown blocks, do not add introduc
         return;
       }
 
-      const resolvedProvider = provider || "openai";
+      const resolvedProvider = provider || "gemini";
       const resolvedApiKey = apiKey || process.env.GEMINI_API_KEY;
 
-      if (resolvedProvider === "openai" && !resolvedApiKey) {
+      if (resolvedProvider === "gemini" && !resolvedApiKey) {
         res.status(400).json({
-          error: "No default OpenAI API Key is configured on the server. Please provide a custom API Key in the settings overlay.",
+          error: "No default Gemini API Key is configured on the server. Please provide a custom API Key in the settings overlay.",
         });
         return;
       }
@@ -374,7 +396,29 @@ Perform a high-level STAR evaluation and return a perfectly formatted JSON objec
 Return ONLY the JSON. Do not wrap in markdown blocks, do not add introductory elements, and do not add trailing markdown content.
 `;
 
-      if (resolvedProvider === "openai") {
+      if (resolvedProvider === "gemini") {
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model || "gemini-2.5-flash"}:generateContent?key=${resolvedApiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: evalPrompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          }),
+        });
+
+        if (!geminiResponse.ok) {
+          const errData = await geminiResponse.json().catch(() => ({}));
+          res.status(geminiResponse.status).json({ error: `Gemini API Error: ${errData?.error?.message || geminiResponse.statusText}` });
+          return;
+        }
+
+        const data: any = await geminiResponse.json();
+        const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        res.json(JSON.parse(resultText));
+        return;
+      } else if (resolvedProvider === "openai") {
         if (!resolvedApiKey) {
           res.status(400).json({ error: "An OpenAI API Key must be provided to use the OpenAI provider." });
           return;
