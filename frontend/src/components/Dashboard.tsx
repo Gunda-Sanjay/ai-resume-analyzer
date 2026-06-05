@@ -67,7 +67,7 @@ export default function Dashboard({
         body: JSON.stringify({
           question: questionText,
           answer,
-          provider: apiConfig?.provider || "openai",
+          provider: apiConfig?.provider || "gemini",
           apiKey: apiConfig?.apiKey || "",
           model: apiConfig?.model || ""
         }),
