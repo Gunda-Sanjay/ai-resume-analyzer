@@ -2,9 +2,16 @@ import { createApp } from "../server";
 
 let app: any = null;
 
-export default async (req: any, res: any) => {
+export default (req: any, res: any) => {
   if (!app) {
-    app = await createApp();
+    createApp().then((newApp) => {
+      app = newApp;
+      app(req, res);
+    }).catch((err: any) => {
+      console.error("App creation error:", err);
+      res.status(500).json({ error: err?.message || "Failed to initialize server" });
+    });
+  } else {
+    app(req, res);
   }
-  return app(req, res);
 };

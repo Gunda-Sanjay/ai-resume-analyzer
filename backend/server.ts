@@ -3,10 +3,10 @@ import cors from "cors";
 import { createRequire } from "module";
 import { pathToFileURL } from "url";
 const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse");
+const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
 const mammoth = require("mammoth");
 import dotenv from "dotenv";
-import { getDb, hashPassword } from "./src/mongodb-server";
+import { getDb, hashPassword } from "./src/mongodb-server.js";
 
 dotenv.config();
 
@@ -179,8 +179,15 @@ export async function createApp() {
 
       if (lowerName.endsWith(".pdf")) {
         try {
-          const parsedData = await pdfParse(buffer);
-          const cleanText = (parsedData.text || "").replace(/\u0000/g, " ").trim();
+          const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+          let fullText = "";
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map((item: any) => item.str || "").join(" ");
+            fullText += pageText + " ";
+          }
+          const cleanText = fullText.replace(/\u0000/g, " ").trim();
           res.json({ text: cleanText });
           return;
         } catch (pdfErr: any) {
