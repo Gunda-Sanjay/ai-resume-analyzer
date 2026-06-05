@@ -17,7 +17,7 @@ export interface AnalysisRecord extends AnalysisResult {
 }
 
 export interface ApiConfig {
-  provider: "openai" | "anthropic";
+  provider: "gemini" | "openai" | "anthropic";
   apiKey: string;
   model: string;
 }
