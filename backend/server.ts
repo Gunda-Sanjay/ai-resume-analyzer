@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { createRequire } from "module";
 import { pathToFileURL } from "url";
 const require = createRequire(import.meta.url);
-const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
 const mammoth = require("mammoth");
 import dotenv from "dotenv";
 import { getDb, hashPassword } from "./src/mongodb-server.js";
@@ -437,6 +437,14 @@ Return ONLY the JSON. Do not wrap in markdown blocks, do not add introductory el
 
   return app;
 }
+
+let serverApp: any = null;
+export default async (req: any, res: any) => {
+  if (!serverApp) {
+    serverApp = await createApp();
+  }
+  serverApp(req, res);
+};
 
 // Only start server locally, not in serverless environment
 const shouldStartServerLocally = process.argv[1]
