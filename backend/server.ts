@@ -278,7 +278,7 @@ Return ONLY the JSON object. Do not wrap in markdown blocks, do not add introduc
         });
 
         if (!geminiResponse.ok) {
-          const errData = await geminiResponse.json().catch(() => ({}));
+          const errData: any = await geminiResponse.json().catch(() => ({}));
           res.status(geminiResponse.status).json({ error: `Gemini API Error: ${errData?.error?.message || geminiResponse.statusText}` });
           return;
         }
@@ -409,7 +409,7 @@ Return ONLY the JSON. Do not wrap in markdown blocks, do not add introductory el
         });
 
         if (!geminiResponse.ok) {
-          const errData = await geminiResponse.json().catch(() => ({}));
+          const errData: any = await geminiResponse.json().catch(() => ({}));
           res.status(geminiResponse.status).json({ error: `Gemini API Error: ${errData?.error?.message || geminiResponse.statusText}` });
           return;
         }
