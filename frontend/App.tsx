@@ -39,7 +39,7 @@ export default function App() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [apiConfig, setApiConfig] = useState<ApiConfig>({
-    provider: "openai",
+    provider: "gemini",
     apiKey: "",
     model: ""
   });
